@@ -44,7 +44,7 @@ When you run any command for the first time, it will create a new directory on:
 
 Where it will store the added tokens.
 
-1. Add a token
+#### Add a token
 
 Usage: otp-cli add [-h] [Token Name] [Token Key]
 
@@ -60,14 +60,16 @@ Enter that password again: <hidden>
 Created [<$HOME>/otp-cli/tokens/my_token.enc]
 ```
 
-2. Show OTP
+#### Show OTP
 
 Usage: otp-cli show [-h] [-1] [-n] [-s] <Token Name>
 
+```
  -h : Show help
  -1 : Get one password and exit.
  -n : Do not copy to clipboard.
  -s : Silent. Do not output anything to console.
+```
 
 Ex.:
 ```
@@ -77,10 +79,10 @@ OTP Password: <hidden>
 ```
 Where:
 
-[SS] is the seconds counter. A new OTP will be generated wvery 30 seconds.
-[DDDDDD] is the 6-digit One-Time-Password.
+- [SS] is the seconds counter. A new OTP will be generated wvery 30 seconds.
+- [DDDDDD] is the 6-digit One-Time-Password.
 
-3. Unlock token file
+#### Unlock token file
 
 Usage: otp-cli unlock [-h] [Token Name]
 
@@ -93,7 +95,7 @@ Password to unlock file: <hidden>
 Unlocked file [<$HOME>/otp-cli/tokens/my_token]
 ```
 
-4. Remove token
+#### Remove token
 
 Usage: otp-cli remove [-h] [Token Name]
 

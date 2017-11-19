@@ -3,26 +3,16 @@
 function validate_modifiers {
   OUTPUT="/dev/stdout"
 
-  if [[ "$1" == "-h" ]]; then
-    show_usage
-    exit 1
-  fi
+  [[ "$1" == "-h" ]] && show_usage
 
-  while [ $# -gt 1 ]
+  while [ $# -gt 0 ]
   do
-    if [[ "$1" == "-n" ]]; then
-      NO_CLIPBOARD=true
-    fi
-    if [[ "$1" == "-1" ]]; then
-      ONE_TIME=true
-    fi
-    if [[ "$1" == "-s" ]]; then
-      OUTPUT="/dev/null"
-    fi
+    [[ "$1" == "-n" ]] && NO_CLIPBOARD=true
+    [[ "$1" == "-1" ]] && ONE_TIME=true
+    [[ "$1" == "-s" ]] && OUTPUT="/dev/null"
+    [[ $1 != -* ]] && TOKEN_NAME="$1"
     shift
   done
-
-  [[ $1 != -* ]] && TOKEN_NAME="$1"
 }
 
 function decrypt_token_from_file {
@@ -92,23 +82,20 @@ function show_usage {
 #Init
 verify_command "openssl"
 
-if [ "$#" == 0 ]; then
-  show_usage "Missing parameters"
-fi
-
 validate_modifiers $@
 
-if [ -z "$TOKEN_NAME" ]; then
-  show_usage "Missing Token Name"
-  exit 1
+if [[ -z "$TOKEN_NAME" ]]; then
+  read -r -p "Token name: " TOKEN_NAME
+  if [[ -z "$TOKEN_NAME" ]]; then
+    show_usage "Token name can not be empty"
+    exit 1
+  fi
 fi
 
 check_file
 get_token
 
-if [[ ! $TOKEN =~ ^[0-9A-Z]+$ ]]; then
-  exit 1
-fi
+[[ ! $TOKEN =~ ^[0-9A-Z]+$ ]] && exit 1
 
 LAST_PASSWORD=0
 
@@ -120,9 +107,7 @@ while true; do
 
   printf "\r[$D] $X" > $( echo "$OUTPUT" )
 
-  if [ $ONE_TIME ]; then
-    echo
-    exit 0;
-  fi
+  [[ $ONE_TIME ]] && echo && exit 0
+
   sleep 1
 done

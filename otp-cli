@@ -1,0 +1,46 @@
+#!/bin/sh
+CURRENT_DIR=$(dirname `realpath $0`)
+source $CURRENT_DIR/lib/common
+CMD=$1
+shift
+
+function show_usage {
+  [[ -n "$1" ]] && echo "ERROR: $1"
+  echo "Usage: $( basename ${0} ) <command> [-h]"
+  echo
+  echo " -h : If after a <command>, the respective help. Otherwise, this help."
+  echo
+  echo " Where <command> are:"
+  echo
+  echo " help   : This help"
+  echo " add    : Add a new token"
+  echo " show   : Show the current OTP"
+  echo " unlock : Unlock an encrypted token"
+  echo " remove : Remove a token"
+  exit 1
+}
+
+case $CMD in
+  add)
+  ;;
+  remove)
+  ;;
+  show)
+  ;;
+  unlock)
+  ;;
+  help)
+  show_usage
+  ;;
+  -h)
+  show_usage
+  ;;
+  -help)
+  show_usage
+  ;;
+  *)
+  show_usage "Unknow command $CMD"
+  ;;
+esac
+
+source $CURRENT_DIR/lib/$CMD

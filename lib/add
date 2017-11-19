@@ -1,0 +1,67 @@
+#!/bin/sh
+
+TOKEN_NAME=$1
+TOKEN_KEY=$2
+
+function create_plain_token {
+  INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
+  echo $TOKEN_KEY > $INPUT_FILE
+  chmod 400 $INPUT_FILE
+}
+
+function show_usage {
+  [[ -n "$1" ]] && echo "ERROR: $1"
+  echo "Usage: $( basename ${0} ) add [-h] [Token Name] [Token Key]"
+  echo
+  echo " -h : This help"
+  echo
+  echo "If [Token Name] or [Token Key] are empty, they will be prompted."
+  exit 1
+}
+
+if [[ "$1" == "-h" ]]; then
+  show_usage
+  exit 1
+fi
+
+if [[ -z "$TOKEN_NAME" ]]; then
+  read -r -p "Token name: " TOKEN_NAME
+  if [[ -z "$TOKEN_NAME" ]]; then
+    show_usage "Token name can not be empty"
+    exit 1
+  fi
+fi
+
+if [[ -z "$TOKEN_KEY" ]]; then
+  read -s -r -p "Token key: " TOKEN_KEY
+  echo
+  if [[ -z "$TOKEN_KEY" ]]; then
+    show_usage "Token key can not be empty"
+    exit 1
+  fi
+fi
+
+read -s -r -p "Password to lock file: " PASSWORD1
+echo
+if [[ -z "$PASSWORD1" ]]; then
+  create_plain_token
+  echo "WARN: Token is not password protected!"
+  echo "Created [$INPUT_FILE]"
+  exit 0
+fi
+
+read -s -r -p "Enter that password again: " PASSWORD2
+echo
+
+if [[ ! "$PASSWORD1" == "$PASSWORD2" ]]; then
+  echo "ERROR: The passwords do not match!"
+  exit 1
+fi
+
+create_plain_token
+
+OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
+echo $PASSWORD1 | openssl enc -aes-256-cbc -salt -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
+rm -f "$INPUT_FILE"
+chmod 400 $OUTPUT_FILE
+echo "Created [$OUTPUT_FILE]"

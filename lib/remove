@@ -1,0 +1,39 @@
+#!/bin/sh
+
+function show_usage {
+  [[ -n "$1" ]] && echo "ERROR: $1"
+  echo "Usage: $( basename ${0} ) remove [-h] [Token Name]"
+  echo
+  echo " -h : This help"
+  echo
+  echo "If [Token Name] is empty, it will be prompted."
+  exit 1
+}
+
+if [[ "$1" == "-h" ]]; then
+  show_usage
+  exit 1
+fi
+
+TOKEN_NAME=$1
+
+if [[ -z "$TOKEN_NAME" ]]; then
+  read -r -p "Token name: " TOKEN_NAME
+  if [[ -z "$TOKEN_NAME" ]]; then
+    show_usage "Token name can not be empty"
+    exit 1
+  fi
+fi
+
+FILE="$TOKENFILES_DIR/$TOKEN_NAME"
+
+if [ -f $FILE ]; then
+  rm -f $FILE
+  echo "Removed file [$FILE]"
+fi
+
+FILE="$FILE.enc"
+if [ -f $FILE ]; then
+  rm -f $FILE
+  echo "Removed file [$FILE]"
+fi

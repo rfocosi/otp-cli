@@ -3,26 +3,29 @@
 TOKENFILES_DIR="$HOME/otp-cli/tokens"
 OS=$( uname )
 
-function check_tokenfiles_dir {
-  if [[ ! -a "$TOKENFILES_DIR" ]]; then
-    echo "ERROR: Directory $TOKENFILES_DIR can not be created!"
+check_tokenfiles_dir()
+{
+  if [ ! -d $TOKENFILES_DIR ]; then
+    echo "ERROR: Directory $TOKENFILES_DIR not created!"
     exit 1
   fi
 
   check_permissions $TOKENFILES_DIR "700"
 }
 
-function set_tokenfiles_dir {
-  if [[ ! -a "$TOKENFILES_DIR" ]]; then
+set_tokenfiles_dir()
+{
+  if [ ! -d "$TOKENFILES_DIR" ]; then
     mkdir -p $TOKENFILES_DIR
     chmod 700 $TOKENFILES_DIR
   fi
 }
 
-function check_permissions {
-  if [[ $OS = "Darwin" ]]; then
+check_permissions()
+{
+  if [ $OS = "Darwin" ]; then
     PERMISSIONS=$( stat -L -f "%A" $1 )
-  elif [[ $OS = "Linux" ]]; then
+  elif [ $OS = "Linux" ]; then
     PERMISSIONS=$( stat -L -c "%a" $1 )
   fi
 

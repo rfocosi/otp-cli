@@ -1,7 +1,8 @@
 #!/bin/sh
 
-function show_usage {
-  [[ -n "$1" ]] && echo "ERROR: $1"
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
   echo "Usage: $( basename ${0} ) remove [-h] [Token Name]"
   echo
   echo " -h : This help"
@@ -10,14 +11,14 @@ function show_usage {
   exit 1
 }
 
-if [[ "$1" == "-h" ]]; then
+if [ "$1" = "-h" ]; then
   show_usage
   exit 1
 fi
 
 TOKEN_NAME=$1
 
-if [[ -z "$TOKEN_NAME" ]]; then
+if [ -z "$TOKEN_NAME" ]; then
   read -r -p "Token name: " TOKEN_NAME
   if [[ -z "$TOKEN_NAME" ]]; then
     show_usage "Token name can not be empty"

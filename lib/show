@@ -1,35 +1,41 @@
 #!/bin/sh
 
-function validate_modifiers {
+validate_modifiers()
+{
   OUTPUT="/dev/stdout"
 
-  [[ "$1" == "-h" ]] && show_usage
+  [ "$1" = "-h" ] && show_usage
 
   while [ $# -gt 0 ]
   do
-    [[ "$1" == "-n" ]] && NO_CLIPBOARD=true
-    [[ "$1" == "-1" ]] && ONE_TIME=true
-    [[ "$1" == "-s" ]] && OUTPUT="/dev/null"
-    [[ $1 != -* ]] && TOKEN_NAME="$1"
+    [ "$1" = "-n" ] && NO_CLIPBOARD=true
+    [ "$1" = "-1" ] && ONE_TIME=true
+    [ "$1" = "-s" ] && OUTPUT="/dev/null"
+    [ $1 != -* ] && TOKEN_NAME="$1"
     shift
   done
 }
 
-function decrypt_token_from_file {
-  read -s -r -p "OTP Password: " PASSWORD
+decrypt_token_from_file()
+{
+  stty -echo
+  read -r -p "OTP Password: " PASSWORD
+  stty echo
   echo $PASSWORD | openssl enc -aes-256-cbc -d -salt -pass stdin -in $1
 }
 
-function plaintext_token_from_file {
+plaintext_token_from_file()
+{
   cat $1
 }
 
-function check_file {
+check_file()
+{
   TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
-  FILES=("${TOKEN_PATH}.enc" "${TOKEN_PATH}")
-
-  for file in ${FILES[@]}; do
-    if [[ -f "${file}" ]]; then
+  set "${TOKEN_PATH}.enc" "${TOKEN_PATH}"
+  FILES="$@"
+  for file in $FILES; do
+    if [ -f "${file}" ]; then
       check_permissions $file "400"
       TOKEN_FILE="${file}"
       return 0
@@ -40,8 +46,9 @@ function check_file {
   exit 1
 }
 
-function get_token {
-  if [[ ${TOKEN_FILE} == *.enc ]]; then
+get_token()
+{
+  if [ -f "$TOKEN_FILE" ]; then
     TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
     echo > $( echo "$OUTPUT" )
   else
@@ -49,17 +56,19 @@ function get_token {
   fi
 }
 
-function verify_command {
+verify_command()
+{
   command -v $1 >/dev/null 2>&1 || { echo >&2 "Required '$1'. Install it and try again."; echo "Aborting."; exit 1; }
 }
 
-function copy_to_clipboard {
+copy_to_clipboard()
+{
   if [ "$NO_CLIPBOARD" != "true" ]; then
     if [ "$X" != "$LAST_PASSWORD" ]; then
-      if [[ $OS = "Darwin" ]]; then
+      if [ $OS = "Darwin" ]; then
         verify_command "pbcopy"
         printf "$X" | pbcopy
-      elif [[ $OS = "Linux" ]]; then
+      elif [ $OS = "Linux" ]; then
         verify_command "xclip"
         printf "$X" | xclip -sel clip
       fi
@@ -68,8 +77,9 @@ function copy_to_clipboard {
   fi
 }
 
-function show_usage {
-  [[ -n "$1" ]] && echo "ERROR: $1"
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
   echo "Usage: $( basename ${0} ) show [-h] [-1] [-n] [-s] <Token Name>"
   echo
   echo " -h : This help"
@@ -84,9 +94,9 @@ verify_command "openssl"
 
 validate_modifiers $@
 
-if [[ -z "$TOKEN_NAME" ]]; then
+if [ -z "$TOKEN_NAME" ]; then
   read -r -p "Token name: " TOKEN_NAME
-  if [[ -z "$TOKEN_NAME" ]]; then
+  if [ -z "$TOKEN_NAME" ]; then
     show_usage "Token name can not be empty"
     exit 1
   fi
@@ -95,7 +105,7 @@ fi
 check_file
 get_token
 
-[[ ! $TOKEN =~ ^[0-9A-Z]+$ ]] && exit 1
+echo "$TOKEN" | grep -Eqv '^[0-9A-Z]+$' && exit 1
 
 LAST_PASSWORD=0
 
@@ -107,7 +117,7 @@ while true; do
 
   printf "\r[$D] $X" > $( echo "$OUTPUT" )
 
-  [[ $ONE_TIME ]] && echo && exit 0
+  [ $ONE_TIME ] && echo && exit 0
 
   sleep 1
 done

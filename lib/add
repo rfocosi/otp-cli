@@ -3,14 +3,16 @@
 TOKEN_NAME=$1
 TOKEN_KEY=$2
 
-function create_plain_token {
+create_plain_token()
+{
   INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
   echo $TOKEN_KEY > $INPUT_FILE
   chmod 400 $INPUT_FILE
 }
 
-function show_usage {
-  [[ -n "$1" ]] && echo "ERROR: $1"
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
   echo "Usage: $( basename ${0} ) add [-h] [Token Name] [Token Key]"
   echo
   echo " -h : This help"
@@ -19,41 +21,45 @@ function show_usage {
   exit 1
 }
 
-if [[ "$1" == "-h" ]]; then
+if [ "-h" = "$1" ]; then
   show_usage
   exit 1
 fi
 
-if [[ -z "$TOKEN_NAME" ]]; then
+if [ -z "$TOKEN_NAME" ]; then
   read -r -p "Token name: " TOKEN_NAME
-  if [[ -z "$TOKEN_NAME" ]]; then
+  if [ -z "$TOKEN_NAME" ]; then
     show_usage "Token name can not be empty"
     exit 1
   fi
 fi
 
-if [[ -z "$TOKEN_KEY" ]]; then
-  read -s -r -p "Token key: " TOKEN_KEY
+if [ -z "$TOKEN_KEY" ]; then
+  stty -echo
+  read -r -p "Token key: " TOKEN_KEY
+  stty echo
   echo
-  if [[ -z "$TOKEN_KEY" ]]; then
+  if [ -z "$TOKEN_KEY" ]; then
     show_usage "Token key can not be empty"
     exit 1
   fi
 fi
 
-read -s -r -p "Password to lock file: " PASSWORD1
+stty -echo
+read -r -p "Password to lock file: " PASSWORD1
 echo
-if [[ -z "$PASSWORD1" ]]; then
+if [ -z "$PASSWORD1" ]; then
   create_plain_token
   echo "WARN: Token is not password protected!"
   echo "Created [$INPUT_FILE]"
   exit 0
 fi
 
-read -s -r -p "Enter that password again: " PASSWORD2
+read -r -p "Enter that password again: " PASSWORD2
 echo
+stty echo
 
-if [[ ! "$PASSWORD1" == "$PASSWORD2" ]]; then
+if [ "$PASSWORD1" != "$PASSWORD2" ]; then
   echo "ERROR: The passwords do not match!"
   exit 1
 fi

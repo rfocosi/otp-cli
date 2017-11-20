@@ -1,7 +1,8 @@
 #!/bin/sh
 
-function show_usage {
-  [[ -n "$1" ]] && echo "ERROR: $1"
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
   echo "Usage: $( basename ${0} ) unlock [-h] [Token Name]"
   echo
   echo " -h : This help"
@@ -10,16 +11,16 @@ function show_usage {
   exit 1
 }
 
-if [[ "$1" == "-h" ]]; then
+if [ "$1" = "-h" ]; then
   show_usage
   exit 1
 fi
 
 TOKEN_NAME=$1
 
-if [[ -z "$TOKEN_NAME" ]]; then
+if [ -z "$TOKEN_NAME" ]; then
   read -r -p "Token name: " TOKEN_NAME
-  if [[ -z "$TOKEN_NAME" ]]; then
+  if [ -z "$TOKEN_NAME" ]; then
     show_usage "Token name can not be empty"
     exit 1
   fi
@@ -32,7 +33,9 @@ if [ ! -f $INPUT_FILE ]; then
   exit 1
 fi
 
-read -s -r -p "Password to unlock file: " PASSWORD
+stty -echo
+read -r -p "Password to unlock file: " PASSWORD
+stty echo
 
 OUTPUT_FILE=$( echo $INPUT_FILE | sed 's/.enc//' )
 
@@ -40,7 +43,7 @@ echo $PASSWORD | openssl enc -aes-256-cbc -d -salt -in "$INPUT_FILE" -out "$OUTP
 
 TOKEN=$( cat $OUTPUT_FILE )
 
-if [[ ! $TOKEN =~ ^[0-9A-Z]+$ ]]; then
+if [ ! $TOKEN =~ ^[0-9A-Z]+$ ]; then
   echo "ERROR: Can not unlock file!"
   rm $OUTPUT_FILE
   exit 1

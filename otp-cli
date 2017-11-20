@@ -1,11 +1,12 @@
 #!/bin/sh
 CURRENT_DIR=$(dirname `realpath $0`)
-source $CURRENT_DIR/lib/common
+. $CURRENT_DIR/lib/common
 CMD=$1
-shift
+[ $# -gt 0 ] && shift
 
-function show_usage {
-  [[ -n "$1" ]] && echo "ERROR: $1"
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
   echo "Usage: $( basename ${0} ) <command> [-h]"
   echo
   echo " -h : If after a <command>, the respective help. Otherwise, this help."
@@ -43,4 +44,4 @@ case $CMD in
   ;;
 esac
 
-source $CURRENT_DIR/lib/$CMD
+. $CURRENT_DIR/lib/$CMD

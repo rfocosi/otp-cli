@@ -78,7 +78,7 @@ OTP Password: <hidden>
 ```
 Where:
 
-- [SS] is the seconds counter. A new OTP will be generated wvery 30 seconds.
+- [SS] is the seconds counter. A new OTP will be generated every 30 seconds.
 - [DDDDDD] is the 6-digit One-Time-Password.
 
 #### Copy to clipboard

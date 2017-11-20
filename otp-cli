@@ -24,6 +24,8 @@ show_usage()
 case $CMD in
   add)
   ;;
+  clip)
+  ;;
   remove)
   ;;
   show)

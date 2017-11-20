@@ -62,12 +62,11 @@ Created [<$HOME>/otp-cli/tokens/my_token.enc]
 
 #### Show OTP
 
-Usage: otp-cli show [-h] [-1] [-n] [-s] <Token Name>
+Usage: otp-cli show [-h] [-1] [-c] [-s] <Token Name>
 
 ```
- -h : Show help
  -1 : Get one password and exit.
- -n : Do not copy to clipboard.
+ -c : Copy to clipboard.
  -s : Silent. Do not output anything to console.
 ```
 
@@ -81,6 +80,14 @@ Where:
 
 - [SS] is the seconds counter. A new OTP will be generated wvery 30 seconds.
 - [DDDDDD] is the 6-digit One-Time-Password.
+
+#### Copy to clipboard
+
+Usage: otp-cli clip [-h] [-k] <Token Name>
+
+```
+ -k : Keep generating OTP.
+```
 
 #### Unlock token file
 

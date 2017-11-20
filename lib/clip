@@ -8,9 +8,7 @@ validate_modifiers()
 
   while [ $# -gt 0 ]
   do
-    [ "$1" = "-c" ] && TO_CLIPBOARD=true
-    [ "$1" = "-1" ] && ONE_TIME=true
-    [ "$1" = "-s" ] && OUTPUT="/dev/null"
+    [ "$1" = "-k" ] && KEEP="true"
     [ $1 != -* ] && TOKEN_NAME="$1"
     shift
   done
@@ -50,7 +48,6 @@ get_token()
 {
   if [ -f "$TOKEN_FILE" ]; then
     TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
-    echo > $( echo "$OUTPUT" )
   else
     TOKEN=$( plaintext_token_from_file $TOKEN_FILE )
   fi
@@ -63,7 +60,7 @@ verify_command()
 
 copy_to_clipboard()
 {
-  if [ $TO_CLIPBOARD ]; then
+  if [ "$NO_CLIPBOARD" != "true" ]; then
     if [ "$X" != "$LAST_PASSWORD" ]; then
       if [ $OS = "Darwin" ]; then
         verify_command "pbcopy"
@@ -80,12 +77,10 @@ copy_to_clipboard()
 show_usage()
 {
   [ -n "$1" ] && echo "ERROR: $1"
-  echo "Usage: $( basename ${0} ) show [-h] [-1] [-c] [-s] <Token Name>"
+  echo "Usage: $( basename ${0} ) clip [-h] [-k] <Token Name>"
   echo
   echo " -h : This help"
-  echo " -1 : Get one password and exit."
-  echo " -c : Copy to clipboard."
-  echo " -s : Silent. Do not output anything to console."
+  echo " -k : Keep generating OTP."
   exit 1
 }
 
@@ -115,9 +110,7 @@ while true; do
 
   copy_to_clipboard $X
 
-  printf "\r[$D] $X" > $( echo "$OUTPUT" )
-
-  [ $ONE_TIME ] && echo && exit 0
+  [ "$KEEP" = "" ] && echo && exit 0
 
   sleep 1
 done

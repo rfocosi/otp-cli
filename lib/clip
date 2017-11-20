@@ -32,7 +32,6 @@ read_token_name
 get_token
 
 while true; do
-  D="$( printf "%.2d" $( expr `date +%S` % 30 ) )"
   X=$( oathtool --totp -b "$TOKEN" )
 
   copy_to_clipboard $X

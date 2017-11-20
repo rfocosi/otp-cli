@@ -26,13 +26,7 @@ if [ "-h" = "$1" ]; then
   exit 1
 fi
 
-if [ -z "$TOKEN_NAME" ]; then
-  read -r -p "Token name: " TOKEN_NAME
-  if [ -z "$TOKEN_NAME" ]; then
-    show_usage "Token name can not be empty"
-    exit 1
-  fi
-fi
+read_token_name
 
 if [ -z "$TOKEN_KEY" ]; then
   stty -echo

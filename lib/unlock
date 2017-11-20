@@ -18,36 +18,20 @@ fi
 
 TOKEN_NAME=$1
 
-if [ -z "$TOKEN_NAME" ]; then
-  read -r -p "Token name: " TOKEN_NAME
-  if [ -z "$TOKEN_NAME" ]; then
-    show_usage "Token name can not be empty"
-    exit 1
-  fi
-fi
+read_token_name
 
-INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
+TOKEN_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
 
-if [ ! -f $INPUT_FILE ]; then
-  echo "The file [$INPUT_FILE] does not exist"
+if [ ! -f $TOKEN_FILE ]; then
+  echo "The file [$TOKEN_FILE] does not exist"
   exit 1
 fi
 
-stty -echo
-read -r -p "Password to unlock file: " PASSWORD
-stty echo
+get_token
 
-OUTPUT_FILE=$( echo $INPUT_FILE | sed 's/.enc//' )
+OUTPUT_FILE=$( echo $TOKEN_FILE | sed 's/.enc//' )
 
-echo $PASSWORD | openssl enc -aes-256-cbc -d -salt -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
-
-TOKEN=$( cat $OUTPUT_FILE )
-
-if [ ! $TOKEN =~ ^[0-9A-Z]+$ ]; then
-  echo "ERROR: Can not unlock file!"
-  rm $OUTPUT_FILE
-  exit 1
-fi
+echo $TOKEN > $OUTPUT_FILE
 
 echo
 echo "Unlocked file [$OUTPUT_FILE]"

@@ -16,66 +16,6 @@ validate_modifiers()
   done
 }
 
-decrypt_token_from_file()
-{
-  stty -echo
-  read -r -p "OTP Password: " PASSWORD
-  stty echo
-  echo $PASSWORD | openssl enc -aes-256-cbc -d -salt -pass stdin -in $1
-}
-
-plaintext_token_from_file()
-{
-  cat $1
-}
-
-check_file()
-{
-  TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
-  set "${TOKEN_PATH}.enc" "${TOKEN_PATH}"
-  FILES="$@"
-  for file in $FILES; do
-    if [ -f "${file}" ]; then
-      check_permissions $file "400"
-      TOKEN_FILE="${file}"
-      return 0
-    fi
-  done
-
-  echo "ERROR: Token files [${FILES[@]}] doesn't exist"
-  exit 1
-}
-
-get_token()
-{
-  if [ -f "$TOKEN_FILE" ]; then
-    TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
-    echo > $( echo "$OUTPUT" )
-  else
-    TOKEN=$( plaintext_token_from_file $TOKEN_FILE )
-  fi
-}
-
-verify_command()
-{
-  command -v $1 >/dev/null 2>&1 || { echo >&2 "Required '$1'. Install it and try again."; echo "Aborting."; exit 1; }
-}
-
-copy_to_clipboard()
-{
-  if [ $TO_CLIPBOARD ]; then
-    if [ "$X" != "$LAST_PASSWORD" ]; then
-      if [ $OS = "Darwin" ]; then
-        verify_command "pbcopy"
-        printf "$X" | pbcopy
-      elif [ $OS = "Linux" ]; then
-        verify_command "xclip"
-        printf "$X" | xclip -sel clip
-      fi
-      LAST_PASSWORD="$X"
-    fi
-  fi
-}
 
 show_usage()
 {
@@ -90,30 +30,19 @@ show_usage()
 }
 
 #Init
-verify_command "openssl"
-
 validate_modifiers $@
 
-if [ -z "$TOKEN_NAME" ]; then
-  read -r -p "Token name: " TOKEN_NAME
-  if [ -z "$TOKEN_NAME" ]; then
-    show_usage "Token name can not be empty"
-    exit 1
-  fi
-fi
+read_token_name
 
-check_file
 get_token
 
-echo "$TOKEN" | grep -Eqv '^[0-9A-Z]+$' && exit 1
-
-LAST_PASSWORD=0
+echo > $( echo "$OUTPUT" )
 
 while true; do
   D="$( printf "%.2d" $( expr `date +%S` % 30 ) )"
   X=$( oathtool --totp -b "$TOKEN" )
 
-  copy_to_clipboard $X
+  [ $TO_CLIPBOARD ] && copy_to_clipboard $X
 
   printf "\r[$D] $X" > $( echo "$OUTPUT" )
 

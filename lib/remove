@@ -18,13 +18,7 @@ fi
 
 TOKEN_NAME=$1
 
-if [ -z "$TOKEN_NAME" ]; then
-  read -r -p "Token name: " TOKEN_NAME
-  if [[ -z "$TOKEN_NAME" ]]; then
-    show_usage "Token name can not be empty"
-    exit 1
-  fi
-fi
+read_token_name
 
 FILE="$TOKENFILES_DIR/$TOKEN_NAME"
 

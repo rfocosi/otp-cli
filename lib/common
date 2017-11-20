@@ -2,6 +2,7 @@
 
 TOKENFILES_DIR="$HOME/otp-cli/tokens"
 OS=$( uname )
+LAST_PASSWORD=0
 
 check_tokenfiles_dir()
 {
@@ -34,6 +35,80 @@ check_permissions()
     exit 1
   fi
 }
+
+get_token_file()
+{
+  TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
+  set "${TOKEN_PATH}.enc" "${TOKEN_PATH}"
+  FILES="$@"
+  for file in $FILES; do
+    if [ -f "${file}" ]; then
+      check_permissions $file "400"
+      TOKEN_FILE="${file}"
+      return 0
+    fi
+  done
+
+  echo "ERROR: Token files [${FILES[@]}] doesn't exist"
+  exit 1
+}
+
+decrypt_token_from_file()
+{
+  stty -echo
+  read -r -p "OTP Password: " PASSWORD
+  stty echo
+  echo $PASSWORD | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE
+}
+
+plaintext_token_from_file()
+{
+  cat $TOKEN_FILE
+}
+
+get_token()
+{
+  get_token_file
+  if [ -f "$TOKEN_FILE" ]; then
+    TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
+  else
+    TOKEN=$( plaintext_token_from_file $TOKEN_FILE )
+  fi
+
+  echo "$TOKEN" | grep -Eqv '^[0-9A-Z]+$' && exit 1
+}
+
+verify_command()
+{
+  command -v $1 >/dev/null 2>&1 || { echo >&2 "Required '$1'. Install it and try again."; echo "Aborting."; exit 1; }
+}
+
+copy_to_clipboard()
+{
+  if [ "$1" != "$LAST_PASSWORD" ]; then
+    if [ $OS = "Darwin" ]; then
+      verify_command "pbcopy"
+      printf "$1" | pbcopy
+    elif [ $OS = "Linux" ]; then
+      verify_command "xclip"
+      printf "$1" | xclip -sel clip
+    fi
+    LAST_PASSWORD="$1"
+  fi
+}
+
+read_token_name()
+{
+  if [ -z "$TOKEN_NAME" ]; then
+    read -r -p "Token name: " TOKEN_NAME
+    if [ -z "$TOKEN_NAME" ]; then
+      show_usage "Token name can not be empty"
+      exit 1
+    fi
+  fi
+}
+
+verify_command "openssl"
 
 set_tokenfiles_dir
 check_tokenfiles_dir

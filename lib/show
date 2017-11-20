@@ -39,7 +39,8 @@ get_token
 echo > $( echo "$OUTPUT" )
 
 while true; do
-  D="$( printf "%.2d" $(( `date +%S` % 30 )) )"
+  sec=$(( `date +%S` % 30 ))
+  D=`printf "%.2d" $sec`
   X=$( oathtool --totp -b "$TOKEN" )
 
   [ $TO_CLIPBOARD ] && copy_to_clipboard $X

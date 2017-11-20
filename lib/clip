@@ -37,7 +37,9 @@ while true; do
 
   copy_to_clipboard $X
 
-  [ "$KEEP" = "" ] && exit 0
+  [ "$KEEP" = "" ] && break
 
   sleep 1
 done
+
+echo

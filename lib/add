@@ -29,19 +29,18 @@ fi
 read_token_name
 
 if [ -z "$TOKEN_KEY" ]; then
-  stty -echo
-  read -r -p "Token key: " TOKEN_KEY
-  stty echo
+  read_hidden_input "Token key: "
   echo
+  TOKEN_KEY=$IN
   if [ -z "$TOKEN_KEY" ]; then
     show_usage "Token key can not be empty"
     exit 1
   fi
 fi
 
-stty -echo
-read -r -p "Password to lock file: " PASSWORD1
+read_hidden_input "Password to lock: "
 echo
+PASSWORD1=$IN
 if [ -z "$PASSWORD1" ]; then
   create_plain_token
   echo "WARN: Token is not password protected!"
@@ -49,9 +48,9 @@ if [ -z "$PASSWORD1" ]; then
   exit 0
 fi
 
-read -r -p "Enter that password again: " PASSWORD2
+read_hidden_input "Confirm the password: "
 echo
-stty echo
+PASSWORD2=$IN
 
 if [ "$PASSWORD1" != "$PASSWORD2" ]; then
   echo "ERROR: The passwords do not match!"

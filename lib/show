@@ -46,7 +46,9 @@ while true; do
 
   printf "\r[$D] $X" > $( echo "$OUTPUT" )
 
-  [ $ONE_TIME ] && echo && exit 0
+  [ $ONE_TIME ] && break
 
   sleep 1
 done
+
+echo

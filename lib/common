@@ -55,10 +55,8 @@ get_token_file()
 
 decrypt_token_from_file()
 {
-  stty -echo
-  read -r -p "OTP Password: " PASSWORD
-  stty echo
-  echo $PASSWORD | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE
+  read_hidden_input "OTP Password: "
+  echo $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE
 }
 
 plaintext_token_from_file()
@@ -80,7 +78,7 @@ get_token()
 
 verify_command()
 {
-  command -v $1 >/dev/null 2>&1 || { echo >&2 "Required '$1'. Install it and try again."; echo "Aborting."; exit 1; }
+  command -v $1 >/dev/null 2>&1 || { echo >&2 "\n\nRequired '$1'. Install it and try again.\nAborting."; exit 1; }
 }
 
 copy_to_clipboard()
@@ -106,6 +104,13 @@ read_token_name()
       exit 1
     fi
   fi
+}
+
+read_hidden_input()
+{
+  stty -echo
+  read -r -p "$1" IN
+  stty echo
 }
 
 verify_command "openssl"

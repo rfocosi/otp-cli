@@ -36,7 +36,15 @@ sudo apt install oathtool
 brew install oath-toolkit
 ```
 
-### Usage
+### Add system wide (optional)
+
+- Inside project's root:
+
+```
+sudo ln -s $( echo "$( pwd )/otp-cli" ) /usr/local/bin/otp-cli
+```
+
+## Usage
 
 When you run any command for the first time, it will create a new directory on:
 
@@ -50,13 +58,17 @@ Usage: otp-cli add [-h] [Token Name] [Token Key]
 
 If [Token Name] or [Token Key] are empty, they will be prompted.
 
+If the password is empty, the token will be a plain text file.
+
 Ex.:
 ```
 > ./otp-cli add
 Token name: my_token
 Token key: <hidden>
-Password to lock file: <hidden>
-Enter that password again: <hidden>
+
+An empty password will not lock the file
+Password: <hidden>
+Confirm password: <hidden>
 Created [<$HOME>/otp-cli/tokens/my_token.enc]
 ```
 
@@ -98,7 +110,7 @@ If [Token Name] is empty, it will be prompted.
 Ex.:
 ```
 > ./otp-cli unlock my_token
-Password to unlock file: <hidden>
+Password: <hidden>
 Unlocked file [<$HOME>/otp-cli/tokens/my_token]
 ```
 

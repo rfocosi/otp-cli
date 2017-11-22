@@ -38,7 +38,9 @@ if [ -z "$TOKEN_KEY" ]; then
   fi
 fi
 
-read_hidden_input "Password to lock: "
+echo
+echo "An empty password will not lock the file"
+read_hidden_input "Password: "
 echo
 PASSWORD1=$IN
 if [ -z "$PASSWORD1" ]; then
@@ -48,7 +50,7 @@ if [ -z "$PASSWORD1" ]; then
   exit 0
 fi
 
-read_hidden_input "Confirm the password: "
+read_hidden_input "Confirm password: "
 echo
 PASSWORD2=$IN
 

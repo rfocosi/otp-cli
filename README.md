@@ -4,7 +4,9 @@
 
 One-Time Password generator tool using `oathtool`.
 
-It works like `Authy` and `Google Authenticator`, but for shell command line.
+It works like `Authy` and `Google Authenticator`, but for command line.
+
+Works on any shell (Tested on `sh`, `bash` and `zsh`).
 
 Automatically copies the token into your computer's copy buffer. Just paste it anywhere.
 

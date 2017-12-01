@@ -56,11 +56,13 @@ Where it will store the added tokens.
 
 #### Add a token
 
+```
 Usage: otp-cli add [-h] [Token Name] [Token Key]
 
 If [Token Name] or [Token Key] are empty, they will be prompted.
 
 If the password is empty, the token will be a plain text file.
+```
 
 Ex.:
 ```
@@ -76,9 +78,9 @@ Created [<$HOME>/otp-cli/tokens/my_token.enc]
 
 #### Show OTP
 
+```
 Usage: otp-cli show [-h] [-1] [-c] [-s] <Token Name>
 
-```
  -1 : Get one password and exit.
  -c : Copy to clipboard.
  -s : Silent. Do not output anything to console.
@@ -97,17 +99,25 @@ Where:
 
 #### Copy to clipboard
 
+```
 Usage: otp-cli clip [-h] [-k] <Token Name>
 
-```
  -k : Keep generating OTP.
+```
+
+Ex.:
+```
+> ./otp-cli clip my_token
+OTP Password: <hidden>
 ```
 
 #### Unlock token file
 
+```
 Usage: otp-cli unlock [-h] [Token Name]
 
 If [Token Name] is empty, it will be prompted.
+```
 
 Ex.:
 ```
@@ -118,9 +128,11 @@ Unlocked file [<$HOME>/otp-cli/tokens/my_token]
 
 #### Remove token
 
+```
 Usage: otp-cli remove [-h] [Token Name]
 
 If [Token Name] is empty, it will be prompted.
+```
 
 Ex.:
 ```

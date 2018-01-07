@@ -52,7 +52,43 @@ When you run any command for the first time, it will create a new directory on:
 
 `$HOME/otp-cli/tokens/`
 
-Where it will store the added tokens.
+Where it will store the added tokens and config file.
+
+Ex.:
+```
+$ ./otp-cli add my_token <secret_key>
+An empty password will not lock the file
+Password: <hidden>
+Confirm password: <hidden>
+Created [<$HOME>/otp-cli/tokens/my_token.enc]
+
+$ ./otp-cli show my_token
+OTP Password: <hidden>
+[15] 923842
+
+$ ./otp-cli clip my_token
+OTP Password: <hidden>
+Sent to clipboard!
+
+```
+
+### Config file
+
+The config file is generated, after first run, on `<$HOME>/otp-cli/config`
+
+Example file:
+```
+#!/bin/sh
+
+## This is an example config file
+## All configurations done here will be interpreted as a SH script
+
+## If you have issues with the OS auto selection, try this
+#OS=Linux
+
+## Remaining seconds to wait for next OTP
+#WAIT_FOR_NEXT=5
+```
 
 #### Add a token
 
@@ -66,7 +102,7 @@ If the password is empty, the token will be a plain text file.
 
 Ex.:
 ```
-> ./otp-cli add
+$ ./otp-cli add
 Token name: my_token
 Token key: <hidden>
 
@@ -88,7 +124,7 @@ Usage: otp-cli show [-h] [-1] [-c] [-s] <Token Name>
 
 Ex.:
 ```
-> ./otp-cli show my_token
+$ ./otp-cli show my_token
 OTP Password: <hidden>
 [SS] DDDDDD
 ```
@@ -107,7 +143,7 @@ Usage: otp-cli clip [-h] [-k] <Token Name>
 
 Ex.:
 ```
-> ./otp-cli clip my_token
+$ ./otp-cli clip my_token
 OTP Password: <hidden>
 ```
 
@@ -121,7 +157,7 @@ If [Token Name] is empty, it will be prompted.
 
 Ex.:
 ```
-> ./otp-cli unlock my_token
+$ ./otp-cli unlock my_token
 Password: <hidden>
 Unlocked file [<$HOME>/otp-cli/tokens/my_token]
 ```
@@ -136,6 +172,6 @@ If [Token Name] is empty, it will be prompted.
 
 Ex.:
 ```
-> ./otp-cli remove my_token
+$ ./otp-cli remove my_token
 Removed file [<$HOME>/otp-cli/tokens/my_token.enc]
 ```

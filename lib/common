@@ -1,7 +1,19 @@
 #!/bin/sh
 
-TOKENFILES_DIR="$HOME/otp-cli/tokens"
-OS=$( uname )
+APP_HOME="$HOME/otp-cli"
+TOKENFILES_DIR="$APP_HOME/tokens"
+CONFIG_FILE="$APP_HOME/config"
+WAIT_FOR_NEXT=0
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  cat $CURRENT_DIR/config-example > $CONFIG_FILE
+  chmod 700 $CONFIG_FILE
+fi
+
+. $CONFIG_FILE
+
+[ -z $OS ] && OS=$( uname )
+
 LAST_PASSWORD=0
 
 check_tokenfiles_dir()
@@ -28,6 +40,9 @@ check_permissions()
     PERMISSIONS=$( stat -L -f "%A" $1 )
   elif [ $OS = "Linux" ]; then
     PERMISSIONS=$( stat -L -c "%a" $1 )
+  else
+    # Do not check permissions
+    PERMISSIONS=$2
   fi
 
   if [ $PERMISSIONS != $2 ]; then
@@ -106,11 +121,21 @@ read_token_name()
   fi
 }
 
+remaining_seconds()
+{
+  REMAINING=$(( 30 - (`date +%-S` % 30) ))
+}
+
 read_hidden_input()
 {
   stty -echo
   read -r -p "$1" IN
   stty echo
+}
+
+get_otp()
+{
+  OTP=$( oathtool --totp -b "$1" )
 }
 
 verify_command "openssl"

@@ -31,12 +31,20 @@ read_token_name
 
 get_token
 
+[ $WAIT_FOR_NEXT -gt 0 ] && [ "$KEEP" = "" ] && WAIT=true
+
 while true; do
+  remaining_seconds
   X=$( oathtool --totp -b "$TOKEN" )
 
   copy_to_clipboard $X
 
-  [ "$KEEP" = "" ] && break
+  if [ $WAIT ]; then
+    [ $WAIT_FOR_NEXT -gt $REMAINING ] && printf "\r[%.2d] (Waiting for next token ...)" $REMAINING
+    [ $WAIT_FOR_NEXT -lt $REMAINING ] && break
+  fi
+
+  [ "$WAIT" = "" ] && [ "$KEEP" = "" ] && break
 
   sleep 1
 done

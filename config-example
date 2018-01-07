@@ -7,4 +7,4 @@
 #OS=Linux
 
 ## Remaining secods to wait for next OTP
-#WAIT_FOR_NEXT=10
+#WAIT_FOR_NEXT=5

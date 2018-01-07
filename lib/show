@@ -39,15 +39,15 @@ get_token
 echo > $( echo "$OUTPUT" )
 
 while true; do
-  sec=$(( 30 - (`date +%-S` % 30) ))
-  D=`printf "%.2d" $sec`
+  remaining_seconds
   X=$( oathtool --totp -b "$TOKEN" )
 
   [ $TO_CLIPBOARD ] && copy_to_clipboard $X
+  [ $ONE_TIME ] && [ $WAIT_FOR_NEXT -gt 0 ] && [ $WAIT_FOR_NEXT -gt $REMAINING ] && waiting_for="(Waiting for next token ...)"
 
-  printf "\r[$D] $X" > $( echo "$OUTPUT" )
+  printf "\r[%.2d] %d $waiting_for" $REMAINING $X > $( echo "$OUTPUT" )
 
-  [ $ONE_TIME ] && break
+  [ $ONE_TIME ] && [ $WAIT_FOR_NEXT -lt $REMAINING ] && break
 
   sleep 1
 done

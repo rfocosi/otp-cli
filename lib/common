@@ -1,7 +1,18 @@
 #!/bin/sh
 
-TOKENFILES_DIR="$HOME/otp-cli/tokens"
-OS=$( uname )
+APP_HOME="$HOME/otp-cli"
+TOKENFILES_DIR="$APP_HOME/tokens"
+CONFIG_FILE="$APP_HOME/config"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  cat $CURRENT_DIR/config-example > $CONFIG_FILE
+  chmod 700 $CONFIG_FILE
+fi
+
+. $CONFIG_FILE
+
+[ -z $OS ] && OS=$( uname )
+
 LAST_PASSWORD=0
 
 check_tokenfiles_dir()

@@ -38,16 +38,30 @@ get_token
 
 echo > $( echo "$OUTPUT" )
 
+[ $ONE_TIME ] && [ $WAIT_FOR_NEXT -gt 0 ] && WAIT=true
+
+process_otp()
+{
+  get_otp $TOKEN
+  [ $TO_CLIPBOARD ] && copy_to_clipboard $OTP
+  return 0
+}
+
 while true; do
   remaining_seconds
-  X=$( oathtool --totp -b "$TOKEN" )
+  process_otp
 
-  [ $TO_CLIPBOARD ] && copy_to_clipboard $X
-  [ $ONE_TIME ] && [ $WAIT_FOR_NEXT -gt 0 ] && [ $WAIT_FOR_NEXT -gt $REMAINING ] && waiting_for="(Waiting for next token ...)"
+  [ $WAIT ] && [ $WAIT_FOR_NEXT -ge $REMAINING ] && OTP="(Waiting for next token ...)"
 
-  printf "\r[%.2d] %d $waiting_for" $REMAINING $X > $( echo "$OUTPUT" )
+  display_message=`printf "[%.2d] $OTP" $REMAINING`
 
-  [ $ONE_TIME ] && [ $WAIT_FOR_NEXT -lt $REMAINING ] && break
+  printf "\r"
+  [ $display_message_size ] && for i in `seq $display_message_size`; do printf " "; done
+  printf "\r$display_message" > $( echo "$OUTPUT" )
+
+  display_message_size=${#display_message}
+
+  [ $ONE_TIME ] && [ $WAIT_FOR_NEXT -lt $REMAINING ] && process_otp && break
 
   sleep 1
 done

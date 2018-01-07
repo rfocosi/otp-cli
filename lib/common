@@ -133,6 +133,11 @@ read_hidden_input()
   stty echo
 }
 
+get_otp()
+{
+  OTP=$( oathtool --totp -b "$1" )
+}
+
 verify_command "openssl"
 
 set_tokenfiles_dir

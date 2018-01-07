@@ -33,18 +33,30 @@ get_token
 
 [ $WAIT_FOR_NEXT -gt 0 ] && [ "$KEEP" = "" ] && WAIT=true
 
+clip_otp()
+{
+  get_otp $TOKEN
+  copy_to_clipboard $OTP
+  return 0
+}
+
+clear_display_message()
+{
+  [ $1 -gt 0 ] && printf "\r"; for i in `seq $1`; do printf " "; done
+  return 0
+}
+
 while true; do
   remaining_seconds
-  X=$( oathtool --totp -b "$TOKEN" )
-
-  copy_to_clipboard $X
 
   if [ $WAIT ]; then
-    [ $WAIT_FOR_NEXT -gt $REMAINING ] && printf "\r[%.2d] (Waiting for next token ...)" $REMAINING
-    [ $WAIT_FOR_NEXT -lt $REMAINING ] && break
+    [ $WAIT_FOR_NEXT -ge $REMAINING ] && display_message=`printf "[%.2d] (Waiting for next token ...)" $REMAINING` && printf "\r$display_message"
+    [ $WAIT_FOR_NEXT -lt $REMAINING ] && clip_otp && clear_display_message ${#display_message} && break
+  else
+    clip_otp
   fi
 
-  [ "$WAIT" = "" ] && [ "$KEEP" = "" ] && break
+  [ "$WAIT" = "" ] && [ "$KEEP" = "" ] && clip_otp && break
 
   sleep 1
 done

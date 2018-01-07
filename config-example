@@ -6,5 +6,5 @@
 ## If you have issues with the OS auto selection, try this
 #OS=Linux
 
-## Remaining secods to wait for next OTP
+## Remaining seconds to wait for next OTP
 #WAIT_FOR_NEXT=5

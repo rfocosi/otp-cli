@@ -9,6 +9,7 @@ validate_modifiers()
   while [ $# -gt 0 ]
   do
     [ "$1" = "-k" ] && KEEP="true"
+    [ "$1" = "-s" ] && OUTPUT="/dev/null"
     [ $1 != -* ] && TOKEN_NAME="$1"
     shift
   done
@@ -17,10 +18,11 @@ validate_modifiers()
 show_usage()
 {
   [ -n "$1" ] && echo "ERROR: $1"
-  echo "Usage: $( basename ${0} ) clip [-h] [-k] <Token Name>"
+  echo "Usage: $( basename ${0} ) clip [-h] [-k] [-s] <Token Name>"
   echo
   echo " -h : This help"
   echo " -k : Keep generating OTP."
+  echo " -s : Silent. Do not output anything to console."
   exit 1
 }
 
@@ -37,21 +39,23 @@ clip_otp()
 {
   get_otp $TOKEN
   copy_to_clipboard $OTP
+  printf "\nSent to clipboard!" > $( echo "$OUTPUT" )
   return 0
 }
 
 clear_display_message()
 {
-  [ $1 -gt 0 ] && printf "\r"; for i in `seq $1`; do printf " "; done
+  [ $1 -gt 0 ] && printf "\r" > $( echo "$OUTPUT" ); for i in `seq $1`; do printf " " > $( echo "$OUTPUT" ); done
   return 0
 }
 
+printf "\n" > $( echo "$OUTPUT" )
 while true; do
   remaining_seconds
 
   if [ $WAIT ]; then
-    [ $WAIT_FOR_NEXT -ge $REMAINING ] && display_message=`printf "[%.2d] (Waiting for next token ...)" $REMAINING` && printf "\r$display_message"
-    [ $WAIT_FOR_NEXT -lt $REMAINING ] && clip_otp && clear_display_message ${#display_message} && break
+    [ $WAIT_FOR_NEXT -ge $REMAINING ] && display_message=`printf "[%.2d] (Waiting for next token ...)" $REMAINING` && printf "\r$display_message" > $( echo "$OUTPUT" )
+    [ $WAIT_FOR_NEXT -lt $REMAINING ] && clear_display_message ${#display_message} && clip_otp && break
   else
     clip_otp
   fi

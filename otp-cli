@@ -1,5 +1,5 @@
 #!/bin/sh
-CURRENT_DIR=$(dirname `realpath $0`)
+CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
 . $CURRENT_DIR/lib/common
 CMD=$1
 [ $# -gt 0 ] && shift

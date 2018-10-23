@@ -15,6 +15,7 @@ show_usage()
   echo
   echo " help   : This help"
   echo " add    : Add a new token"
+  echo " clip   : Copy OTP to clipboard"
   echo " show   : Show the current OTP"
   echo " unlock : Unlock an encrypted token"
   echo " remove : Remove a token"

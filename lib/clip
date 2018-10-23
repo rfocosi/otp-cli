@@ -8,7 +8,7 @@ validate_modifiers()
 
   while [ $# -gt 0 ]
   do
-    [ "$1" = "-k" ] && KEEP="true"
+    [ "$1" = "-k" ] && KEEP="true" && OUTPUT="/dev/null"
     [ "$1" = "-s" ] && OUTPUT="/dev/null"
     [ $1 != -* ] && TOKEN_NAME="$1"
     shift
@@ -48,6 +48,7 @@ clear_display_message()
   [ $1 -gt 0 ] && printf "\r" > $( echo "$OUTPUT" ); for i in `seq $1`; do printf " " > $( echo "$OUTPUT" ); done
   return 0
 }
+echo
 
 printf "\n" > $( echo "$OUTPUT" )
 while true; do
@@ -57,7 +58,7 @@ while true; do
     [ $WAIT_FOR_NEXT -ge $REMAINING ] && display_message=`printf "[%.2d] (Waiting for next token ...)" $REMAINING` && printf "\r$display_message" > $( echo "$OUTPUT" )
     [ $WAIT_FOR_NEXT -lt $REMAINING ] && clear_display_message ${#display_message} && clip_otp && break
   else
-    clip_otp
+    [ "$KEEP" = "true" ] && clip_otp
   fi
 
   [ "$WAIT" = "" ] && [ "$KEEP" = "" ] && clip_otp && break

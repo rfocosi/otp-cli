@@ -38,6 +38,12 @@ sudo apt install oathtool
 brew install oath-toolkit
 ```
 
+### Clone the project
+
+```
+git clone git@github.com:rfocosi/otp-cli.git
+```
+
 ### Add system wide (optional)
 
 - Inside project's root:

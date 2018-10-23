@@ -6,6 +6,7 @@ CONFIG_FILE="$APP_HOME/config"
 WAIT_FOR_NEXT=0
 
 if [ ! -f "$CONFIG_FILE" ]; then
+  mkdir -p $APP_HOME
   cat $CURRENT_DIR/config-example > $CONFIG_FILE
   chmod 700 $CONFIG_FILE
 fi

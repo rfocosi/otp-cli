@@ -35,7 +35,14 @@ sudo apt install oathtool
 
 - MacOS
 ```
+brew install core-utils
 brew install oath-toolkit
+```
+
+### Clone the project
+
+```
+git clone git@github.com:rfocosi/otp-cli.git
 ```
 
 ### Add system wide (optional)

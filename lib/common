@@ -89,7 +89,7 @@ get_token()
     TOKEN=$( plaintext_token_from_file $TOKEN_FILE )
   fi
 
-  echo "$TOKEN" | grep -Eqv '^[0-9A-Z]+$' && exit 1
+  echo "$TOKEN" | grep -Eqv '^[0-9A-Za-z]+$' && exit 1
 }
 
 verify_command()

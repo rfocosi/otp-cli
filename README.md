@@ -35,6 +35,7 @@ sudo apt install oathtool
 
 - MacOS
 ```
+brew install core-utils
 brew install oath-toolkit
 ```
 

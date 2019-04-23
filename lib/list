@@ -1,3 +1,28 @@
 #!/bin/sh
 
-ls -1 $TOKENFILES_DIR | sed 's/\(.\+\)\.enc/\1 [Encoded]/'
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
+  echo "Usage: $( basename ${0} ) list [-h]"
+  echo
+  echo " -h : This help"
+  echo
+  echo "List all added tokens. If token is encoded, it appears as [Encoded] on list."
+  exit 1
+}
+
+if [ "-h" = "$1" ]; then
+  show_usage
+  exit 1
+fi
+
+TOKENS=$( find $TOKENFILES_DIR -maxdepth 1 -type f -exec echo {} \; )
+
+if [ -z "$TOKENS" ]; then
+  echo "No tokens found."
+  exit 1
+fi
+
+for token in $TOKENS; do
+  echo $token | sed 's/.\+\///' | sed 's/\(.\+\)\.enc/\1 [Encoded]/'
+done

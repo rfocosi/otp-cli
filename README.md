@@ -154,6 +154,19 @@ $ ./otp-cli clip my_token
 OTP Password: <hidden>
 ```
 
+#### List added tokens
+
+```
+Usage: otp-cli list [-h]
+
+List all added tokens. If token is encoded, it appears as [Encoded] on list.
+```
+
+Ex.:
+```
+$ ./otp-cli list
+```
+
 #### Unlock token file
 
 ```

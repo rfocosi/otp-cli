@@ -83,7 +83,7 @@ plaintext_token_from_file()
 get_token()
 {
   get_token_file
-  if [ -f "$TOKEN_FILE" ]; then
+  if [ -f "$TOKEN_FILE" ] && [ ${TOKEN_FILE: -4} == ".enc" ]; then
     TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
   else
     TOKEN=$( plaintext_token_from_file $TOKEN_FILE )

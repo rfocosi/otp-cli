@@ -4,6 +4,7 @@ APP_HOME="$HOME/otp-cli"
 TOKENFILES_DIR="$APP_HOME/tokens"
 CONFIG_FILE="$APP_HOME/config"
 WAIT_FOR_NEXT=0
+ENCRYPTED=0
 
 if [ ! -f "$CONFIG_FILE" ]; then
   mkdir -p $APP_HOME
@@ -61,11 +62,14 @@ get_token_file()
     if [ -f "${file}" ]; then
       check_permissions $file "400"
       TOKEN_FILE="${file}"
+      if [ "$( basename -s .enc $file )" != "$( basename $file )" ]; then
+        ENCRYPTED=1
+      fi
       return 0
     fi
   done
 
-  echo "ERROR: Token files [${FILES[@]}] doesn't exist"
+  echo "ERROR: Token file '$TOKEN_NAME' doesn't exist"
   exit 1
 }
 
@@ -83,10 +87,10 @@ plaintext_token_from_file()
 get_token()
 {
   get_token_file
-  if [ -f "$TOKEN_FILE" ] && [ ${TOKEN_FILE: -4} == ".enc" ]; then
-    TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
-  else
+  if [ $ENCRYPTED -eq 0 ]; then
     TOKEN=$( plaintext_token_from_file $TOKEN_FILE )
+  else
+    TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
   fi
 
   echo "$TOKEN" | grep -Eqv '^[0-9A-Za-z]+$' && exit 1

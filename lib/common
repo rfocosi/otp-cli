@@ -14,7 +14,7 @@ read_input()
 read_hidden_input()
 {
   stty -echo
-  read_input $1
+  read_input "$1"
   stty echo
 }
 
@@ -85,21 +85,21 @@ get_token_file()
 decrypt_token_from_file()
 {
   read_hidden_input "OTP Password: "
-  echo -n $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE
+  TOKEN=$( echo -n $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE )
 }
 
 plaintext_token_from_file()
 {
-  cat $TOKEN_FILE
+  TOKEN=$( cat $TOKEN_FILE )
 }
 
 get_token()
 {
   get_token_file
   if [ $ENCRYPTED -eq 0 ]; then
-    TOKEN=$( plaintext_token_from_file $TOKEN_FILE )
+    plaintext_token_from_file $TOKEN_FILE
   else
-    TOKEN=$( decrypt_token_from_file $TOKEN_FILE )
+    decrypt_token_from_file $TOKEN_FILE
   fi
 
   echo "$TOKEN" | grep -Eqv '^[0-9A-Za-z]+$' && exit 1

@@ -38,13 +38,10 @@ set_tokenfiles_dir()
 
 check_permissions()
 {
-  if [ $OS = "Darwin" ]; then
-    PERMISSIONS=$( stat -L -f "%A" $1 )
-  elif [ $OS = "Linux" ]; then
+  if [ $( stat --version | head -n 1 | grep -c GNU ) = "1" ]; then
     PERMISSIONS=$( stat -L -c "%a" $1 )
   else
-    # Do not check permissions
-    PERMISSIONS=$2
+    PERMISSIONS=$( stat -L -f "%A" $1 )
   fi
 
   if [ $PERMISSIONS != $2 ]; then

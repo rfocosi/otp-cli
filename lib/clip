@@ -45,7 +45,7 @@ clip_otp()
 
 clear_display_message()
 {
-  [ $1 -gt 0 ] && printf "\r" > $( echo "$OUTPUT" ); for i in `seq $1`; do printf " " > $( echo "$OUTPUT" ); done
+  [ $1 -gt 0 ] && printf "\r" > $( echo "$OUTPUT" ); for i in {1..$1}; do printf " " > $( echo "$OUTPUT" ); done
   return 0
 }
 echo

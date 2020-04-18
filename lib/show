@@ -56,7 +56,7 @@ while true; do
   display_message=`printf "[%.2d] $OTP" $REMAINING`
 
   printf "\r" > $( echo "$OUTPUT" )
-  [ $display_message_size ] && for i in `seq $display_message_size`; do printf " " > $( echo "$OUTPUT" ); done
+  [ $display_message_size ] && for i in {1..$display_message_size}; do printf " " > $( echo "$OUTPUT" ); done
   printf "\r$display_message" > $( echo "$OUTPUT" )
 
   display_message_size=${#display_message}

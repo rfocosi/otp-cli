@@ -100,7 +100,8 @@ copy_to_clipboard()
 read_token_name()
 {
   if [ -z "$TOKEN_NAME" ]; then
-    read -r -p "Token name: " TOKEN_NAME
+    read_input "Token name: "
+    TOKEN_NAME=$IN
     if [ -z "$TOKEN_NAME" ]; then
       show_usage "Token name can not be empty"
       exit 1
@@ -113,10 +114,20 @@ remaining_seconds()
   REMAINING=$(( 30 - (`date +%-S` % 30) ))
 }
 
+read_input()
+{
+  if [ $OS = "OpenBSD" ]; then
+    echo -n "$1"
+    read -r IN
+  else
+    read -r -p "$1" IN
+  fi
+}
+
 read_hidden_input()
 {
   stty -echo
-  read -r -p "$1" IN
+  read_input "$1"
   stty echo
 }
 

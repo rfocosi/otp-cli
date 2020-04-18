@@ -24,5 +24,5 @@ if [ -z "$TOKENS" ]; then
 fi
 
 for token in $TOKENS; do
-  echo $token | sed 's/.\+\///' | sed 's/\(.\+\)\.enc/\1 [Encoded]/'
+  echo $token | sed 's/.*\///' | sed 's/\(.*\)\.enc/\1 [Encoded]/'
 done

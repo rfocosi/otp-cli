@@ -1,5 +1,23 @@
 #!/bin/sh
-CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
+APP_HOME="$HOME/otp-cli"
+TOKENFILES_DIR="$APP_HOME/tokens"
+CONFIG_FILE="$APP_HOME/config"
+WAIT_FOR_NEXT=0
+ENCRYPTED=0
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  mkdir -p $APP_HOME
+  cat $CURRENT_DIR/config-example > $CONFIG_FILE
+  chmod 700 $CONFIG_FILE
+fi
+
+. $CONFIG_FILE
+
+[ -z $OS ] && OS=$( uname )
+
+[ -z $CURRENT_DIR ] && [ $OS = "Darwin" ] && CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
+[ -z $CURRENT_DIR ] && CURRENT_DIR=$(dirname `readlink -f $0`)
+
 . $CURRENT_DIR/lib/common
 CMD=$1
 [ $# -gt 0 ] && shift

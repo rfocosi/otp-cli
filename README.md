@@ -19,7 +19,7 @@ This tool supports both encrypted and plain-text token files.
 
 ### Required to send to copy buffer
 
-* xclip (Linux)
+* xclip (Linux/Debian/\*BSD)
 * pbcopy (MacOS)
 
 Ps.: You can still generate and print OTP without those tools
@@ -30,13 +30,26 @@ Ps.: You can still generate and print OTP without those tools
 
 - Ubuntu/Debian
 ```
-sudo apt install oathtool
+apt install coreutils
+apt install oathtool
 ```
 
 - MacOS
 ```
 brew install coreutils
 brew install oath-toolkit
+```
+
+- FreeBSD
+```
+pkg install coreutils
+pkg install oath-toolkit
+```
+
+- OpenBSD
+```
+pkg_add coreutils
+pkg_add oath-toolkit
 ```
 
 ### Clone the project

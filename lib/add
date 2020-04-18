@@ -63,7 +63,7 @@ create_plain_token
 
 OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
 rm -f "$OUTPUT_FILE"
-echo $PASSWORD1 | openssl enc -aes-256-cbc -salt -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
+echo -n $PASSWORD1 | openssl enc -aes-256-cbc -salt -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
 rm -f "$INPUT_FILE"
 chmod 400 $OUTPUT_FILE
 echo "Created [$OUTPUT_FILE]"

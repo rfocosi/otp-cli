@@ -58,7 +58,7 @@ get_token_file()
 decrypt_token_from_file()
 {
   read_hidden_input "OTP Password: "
-  echo $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE
+  echo -n $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE
 }
 
 plaintext_token_from_file()

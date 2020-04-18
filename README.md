@@ -39,6 +39,17 @@ brew install coreutils
 brew install oath-toolkit
 ```
 
+- FreeBSD
+```
+pkg install oath-toolkit
+```
+
+- OpenBSD
+```
+pkg_add coreutils
+pkg_add oath-toolkit
+```
+
 ### Clone the project
 
 ```

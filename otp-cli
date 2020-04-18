@@ -15,8 +15,8 @@ fi
 
 [ -z $OS ] && OS=$( uname )
 
-[ $OS = "OpenBSD" ] && CURRENT_DIR=$(dirname `readlink -f $0`)
-[ -z $CURRENT_DIR ] && CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
+[ -z $CURRENT_DIR ] && [ $OS = "Darwin" ] && CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
+[ -z $CURRENT_DIR ] && CURRENT_DIR=$(dirname `readlink -f $0`)
 
 . $CURRENT_DIR/lib/common
 CMD=$1

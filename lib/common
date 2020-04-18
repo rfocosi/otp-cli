@@ -1,6 +1,23 @@
 #!/bin/sh
 LAST_PASSWORD=0
 
+read_input()
+{
+  if [ $OS = "OpenBSD" ]; then
+    echo -n $1
+    read -r IN
+  else
+    read -r -p "$1" IN
+  fi
+}
+
+read_hidden_input()
+{
+  stty -echo
+  read_input $1
+  stty echo
+}
+
 check_tokenfiles_dir()
 {
   if [ ! -d $TOKENFILES_DIR ]; then
@@ -122,23 +139,6 @@ read_token_name()
 remaining_seconds()
 {
   REMAINING=$(( 30 - (`date +%S` % 30) ))
-}
-
-read_input()
-{
-  if [ $OS = "OpenBSD" ]; then
-    echo -n "$1"
-    read -r IN
-  else
-    read -r -p "$1" IN
-  fi
-}
-
-read_hidden_input()
-{
-  stty -echo
-  read_input "$1"
-  stty echo
 }
 
 get_otp()

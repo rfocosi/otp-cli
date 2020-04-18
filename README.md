@@ -19,7 +19,7 @@ This tool supports both encrypted and plain-text token files.
 
 ### Required to send to copy buffer
 
-* xclip (Linux)
+* xclip (Linux/Debian/\*BSD)
 * pbcopy (MacOS)
 
 Ps.: You can still generate and print OTP without those tools

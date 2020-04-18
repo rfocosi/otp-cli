@@ -116,7 +116,7 @@ copy_to_clipboard()
     if [ $OS = "Darwin" ]; then
       verify_command "pbcopy"
       printf "$1" | pbcopy
-    elif [ $OS = "Linux" ]; then
+    else
       verify_command "xclip"
       printf "$1" | xclip -sel clip
     fi

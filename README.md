@@ -30,7 +30,8 @@ Ps.: You can still generate and print OTP without those tools
 
 - Ubuntu/Debian
 ```
-sudo apt install oathtool
+apt install coreutils
+apt install oathtool
 ```
 
 - MacOS
@@ -41,6 +42,7 @@ brew install oath-toolkit
 
 - FreeBSD
 ```
+pkg install coreutils
 pkg install oath-toolkit
 ```
 

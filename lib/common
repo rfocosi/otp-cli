@@ -35,6 +35,15 @@ check_permissions()
   fi
 }
 
+get_basename_wo_ext()
+{
+  if [ $OS = "OpenBSD" ]; then
+    BASENAME_WO_EXT=$( basename $1 $2 )
+  else
+    BASENAME_WO_EXT=$( basename -s $2 $1 )
+  fi
+}
+
 get_token_file()
 {
   TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
@@ -44,7 +53,8 @@ get_token_file()
     if [ -f "${file}" ]; then
       check_permissions $file "400"
       TOKEN_FILE="${file}"
-      if [ "$( basename -s .enc $file )" != "$( basename $file )" ]; then
+      get_basename_wo_ext $file .enc
+      if [ "$BASENAME_WO_EXT" != "$( basename $file )" ]; then
         ENCRYPTED=1
       fi
       return 0

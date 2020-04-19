@@ -135,9 +135,12 @@ copy_to_clipboard()
     if [ $OS = "Darwin" ]; then
       verify_command "pbcopy"
       printf "$1" | pbcopy
-    else
+    elif [ ! -z "$DISPLAY" ]; then
       verify_command "xclip"
       printf "$1" | xclip -sel clip
+    else
+      printf "$1"
+      NO_CLIP=1
     fi
     LAST_PASSWORD="$1"
   fi

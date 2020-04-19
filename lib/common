@@ -71,16 +71,16 @@ get_basename_wo_ext()
 get_token_file()
 {
   TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
-  set "${TOKEN_PATH}.enc" "${TOKEN_PATH}"
+  set "${TOKEN_PATH}*" "${TOKEN_PATH}"
   FILES="$@"
   for file in $FILES; do
     if [ -f "${file}" ]; then
       check_permissions $file "400"
       TOKEN_FILE="${file}"
       get_basename_wo_ext $file .enc
-      if [ "$BASENAME_WO_EXT" != "$( basename $file )" ]; then
-        ENCRYPTED=1
-      fi
+      [ "$BASENAME_WO_EXT" != "$( basename $file )" ] && ENCRYPTED=1
+      get_basename_wo_ext $file .pbkdf2
+      [ "$BASENAME_WO_EXT" != "$( basename $file )" ] && ENCRYPTED=2
       return 0
     fi
   done
@@ -92,15 +92,16 @@ get_token_file()
 decrypt_token_from_file()
 {
   read_hidden_input "OTP Password: "
-  TOKEN=$( echo -n $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE )
+  [ $ENCRYPTED -eq 2 ] && PBKDF2="-pbkdf2 -iter 100000"
+  TOKEN=$( echo -n $IN | openssl enc -aes-256-cbc $PBKDF2 -d -salt -pass stdin -in $TOKEN_FILE )
 }
 
 encrypt_token_to_file()
 {
   INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
-  OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
+  OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.pbkdf2"
   rm -f "$OUTPUT_FILE"
-  echo -n $PASSWORD1 | openssl enc -aes-256-cbc -salt -pass stdin -in "$INPUT_FILE" -out "$OUTPUT_FILE"
+  echo -n $PASSWORD1 | openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -salt -pass stdin -in "$INPUT_FILE" -out "$OUTPUT_FILE"
   rm -f "$INPUT_FILE"
   chmod 400 $OUTPUT_FILE
   echo "Created [$OUTPUT_FILE]"

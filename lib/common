@@ -45,17 +45,18 @@ create_plain_token()
 
 check_permissions()
 {
-  if [ $( expr $OS : '.*BSD' ) != "0" ]; then
-    PERMISSIONS=$( stat -f "%OLp" $1 )
-  elif [ $( stat --version | head -n 1 | grep -c GNU ) = "1" ]; then
-    PERMISSIONS=$( stat -L -c "%a" $1 )
-  else
-    PERMISSIONS=$( stat -L -f "%A" $1 )
-  fi
+  if [ $PERMISSION_WARN -eq 1 ]; then
+    if [ $( expr $OS : '.*BSD' ) != "0" ]; then
+      PERMISSIONS=$( stat -f "%OLp" $1 )
+    elif [ $( stat --version | head -n 1 | grep -c GNU ) = "1" ]; then
+      PERMISSIONS=$( stat -L -c "%a" $1 )
+    else
+      PERMISSIONS=$( stat -L -f "%A" $1 )
+    fi
 
-  if [ $PERMISSIONS != $2 ]; then
-    echo "Perms on [$1] are too permissive. Try 'chmod $2 $1' first"
-    exit 1
+    if [ $PERMISSIONS != $2 ]; then
+      echo "WARNING: File permissions on [$1] are too permissive. Use 'chmod $2 $1'"
+    fi
   fi
 }
 

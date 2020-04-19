@@ -111,6 +111,9 @@ Example file:
 
 ## Fix if the current directory can't be found
 #CURRENT_DIR=$HOME/otp-cli/
+
+## Disables permissions Warning
+#PERMISSION_WARN=0
 ```
 
 #### Add a token

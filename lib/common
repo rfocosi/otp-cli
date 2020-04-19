@@ -97,6 +97,7 @@ decrypt_token_from_file()
 
 encrypt_token_to_file()
 {
+  INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
   OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
   rm -f "$OUTPUT_FILE"
   echo -n $PASSWORD1 | openssl enc -aes-256-cbc -salt -pass stdin -in "$INPUT_FILE" -out "$OUTPUT_FILE"

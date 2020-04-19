@@ -1,0 +1,33 @@
+#!/bin/sh
+
+TOKEN_NAME=$1
+
+show_usage()
+{
+  [ -n "$1" ] && echo "ERROR: $1"
+  echo "Usage: $( basename ${0} ) lock [-h] [Token Name]"
+  echo
+  echo " -h : This help"
+  echo
+  echo "If [Token Name] is empty, they will be prompted."
+  exit 1
+}
+
+if [ "-h" = "$1" ]; then
+  show_usage
+  exit 1
+fi
+
+read_token_name
+
+echo
+read_hidden_input "Password: "
+echo
+PASSWORD1=$IN
+
+if [ -z "$PASSWORD1" ]; then
+  echo "Password required!"
+  exit 0
+fi
+
+encrypt_token_to_file

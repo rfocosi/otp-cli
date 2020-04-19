@@ -36,19 +36,27 @@ set_tokenfiles_dir()
   fi
 }
 
+create_plain_token()
+{
+  INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
+  echo $TOKEN_KEY > $INPUT_FILE
+  chmod 400 $INPUT_FILE
+}
+
 check_permissions()
 {
-  if [ $( expr $OS : '.*BSD' ) != "0" ]; then
-    PERMISSIONS=$( stat -f "%OLp" $1 )
-  elif [ $( stat --version | head -n 1 | grep -c GNU ) = "1" ]; then
-    PERMISSIONS=$( stat -L -c "%a" $1 )
-  else
-    PERMISSIONS=$( stat -L -f "%A" $1 )
-  fi
+  if [ $PERMISSION_WARN -eq 1 ]; then
+    if [ $( expr $OS : '.*BSD' ) != "0" ]; then
+      PERMISSIONS=$( stat -f "%OLp" $1 )
+    elif [ $( stat --version | head -n 1 | grep -c GNU ) = "1" ]; then
+      PERMISSIONS=$( stat -L -c "%a" $1 )
+    else
+      PERMISSIONS=$( stat -L -f "%A" $1 )
+    fi
 
-  if [ $PERMISSIONS != $2 ]; then
-    echo "Perms on [$1] are too permissive. Try 'chmod $2 $1' first"
-    exit 1
+    if [ $PERMISSIONS != $2 ]; then
+      echo "WARNING: File permissions on [$1] are too permissive. Use 'chmod $2 $1'"
+    fi
   fi
 }
 
@@ -64,16 +72,16 @@ get_basename_wo_ext()
 get_token_file()
 {
   TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
-  set "${TOKEN_PATH}.enc" "${TOKEN_PATH}"
+  set "${TOKEN_PATH}*" "${TOKEN_PATH}"
   FILES="$@"
   for file in $FILES; do
     if [ -f "${file}" ]; then
       check_permissions $file "400"
       TOKEN_FILE="${file}"
       get_basename_wo_ext $file .enc
-      if [ "$BASENAME_WO_EXT" != "$( basename $file )" ]; then
-        ENCRYPTED=1
-      fi
+      [ "$BASENAME_WO_EXT" != "$( basename $file )" ] && ENCRYPTED=1
+      get_basename_wo_ext $file .pbkdf2
+      [ "$BASENAME_WO_EXT" != "$( basename $file )" ] && ENCRYPTED=2
       return 0
     fi
   done
@@ -85,7 +93,19 @@ get_token_file()
 decrypt_token_from_file()
 {
   read_hidden_input "OTP Password: "
-  TOKEN=$( echo -n $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE )
+  [ $ENCRYPTED -eq 2 ] && PBKDF2="-pbkdf2 -iter 100000"
+  TOKEN=$( echo -n $IN | openssl enc -aes-256-cbc $PBKDF2 -d -salt -pass stdin -in $TOKEN_FILE )
+}
+
+encrypt_token_to_file()
+{
+  INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
+  OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.pbkdf2"
+  rm -f "$OUTPUT_FILE"
+  echo -n $PASSWORD1 | openssl enc -aes-256-cbc -pbkdf2 -iter 100000 -salt -pass stdin -in "$INPUT_FILE" -out "$OUTPUT_FILE"
+  rm -f "$INPUT_FILE"
+  chmod 400 $OUTPUT_FILE
+  echo "Created [$OUTPUT_FILE]"
 }
 
 plaintext_token_from_file()
@@ -116,9 +136,12 @@ copy_to_clipboard()
     if [ $OS = "Darwin" ]; then
       verify_command "pbcopy"
       printf "$1" | pbcopy
-    else
+    elif [ ! -z "$DISPLAY" ]; then
       verify_command "xclip"
       printf "$1" | xclip -sel clip
+    else
+      printf "\n\n$1"
+      NO_CLIP=1
     fi
     LAST_PASSWORD="$1"
   fi

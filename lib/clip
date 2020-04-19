@@ -39,7 +39,7 @@ clip_otp()
 {
   get_otp $TOKEN
   copy_to_clipboard $OTP
-  printf "\nSent to clipboard!" > $( echo "$OUTPUT" )
+  [ -z "$NO_CLIP" ] && printf "\nSent to clipboard!" > $( echo "$OUTPUT" )
   return 0
 }
 

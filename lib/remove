@@ -20,15 +20,9 @@ TOKEN_NAME=$1
 
 read_token_name
 
-FILE="$TOKENFILES_DIR/$TOKEN_NAME"
+get_token_file
 
-if [ -f $FILE ]; then
-  rm -f $FILE
-  echo "Removed file [$FILE]"
-fi
-
-FILE="$FILE.enc"
-if [ -f $FILE ]; then
-  rm -f $FILE
-  echo "Removed file [$FILE]"
+if [ -f $TOKEN_FILE ]; then
+  rm -f $TOKEN_FILE
+  echo "Removed file [$TOKEN_FILE]"
 fi

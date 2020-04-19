@@ -20,7 +20,7 @@ TOKEN_NAME=$1
 
 read_token_name
 
-TOKEN_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
+get_token_file
 
 if [ ! -f $TOKEN_FILE ]; then
   echo "The file [$TOKEN_FILE] does not exist"
@@ -29,9 +29,16 @@ fi
 
 get_token
 
-OUTPUT_FILE=$( echo $TOKEN_FILE | sed 's/.enc//' )
+[ $ENCRYPTED -eq 0 ] && echo "Already unlocked" && exit 1
+[ $ENCRYPTED -eq 1 ] && get_basename_wo_ext $TOKEN_FILE .enc
+[ $ENCRYPTED -eq 2 ] && get_basename_wo_ext $TOKEN_FILE .pbkdf2
 
+OUTPUT_FILE=${TOKENFILES_DIR}/$BASENAME_WO_EXT
+
+rm -f $OUTPUT_FILE
 echo $TOKEN > $OUTPUT_FILE
+chmod 400 $OUTPUT_FILE
+rm -f $TOKEN_FILE
 
 echo
 echo "Unlocked file [$OUTPUT_FILE]"

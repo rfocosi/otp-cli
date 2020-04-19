@@ -29,6 +29,7 @@ fi
 
 get_token
 
+[ $ENCRYPTED -eq 0 ] && echo "Already unlocked" && exit 1
 [ $ENCRYPTED -eq 1 ] && get_basename_wo_ext $TOKEN_FILE .enc
 [ $ENCRYPTED -eq 2 ] && get_basename_wo_ext $TOKEN_FILE .pbkdf2
 

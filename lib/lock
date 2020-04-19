@@ -30,4 +30,13 @@ if [ -z "$PASSWORD1" ]; then
   exit 0
 fi
 
+read_hidden_input "Confirm password: "
+echo
+PASSWORD2=$IN
+
+if [ "$PASSWORD1" != "$PASSWORD2" ]; then
+  echo "ERROR: The passwords do not match!"
+  exit 1
+fi
+
 encrypt_token_to_file

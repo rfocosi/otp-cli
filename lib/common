@@ -72,7 +72,8 @@ get_basename_wo_ext()
 get_token_file()
 {
   TOKEN_PATH=${TOKENFILES_DIR}/${TOKEN_NAME}
-  set "${TOKEN_PATH}*" "${TOKEN_PATH}"
+  set "${TOKEN_PATH}.pbkdf2" "${TOKEN_PATH}.enc" "${TOKEN_PATH}"
+
   FILES="$@"
   for file in $FILES; do
     if [ -f "${file}" ]; then

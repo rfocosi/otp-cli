@@ -36,6 +36,13 @@ set_tokenfiles_dir()
   fi
 }
 
+create_plain_token()
+{
+  INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
+  echo $TOKEN_KEY > $INPUT_FILE
+  chmod 400 $INPUT_FILE
+}
+
 check_permissions()
 {
   if [ $( expr $OS : '.*BSD' ) != "0" ]; then
@@ -86,6 +93,16 @@ decrypt_token_from_file()
 {
   read_hidden_input "OTP Password: "
   TOKEN=$( echo -n $IN | openssl enc -aes-256-cbc -d -salt -pass stdin -in $TOKEN_FILE )
+}
+
+encrypt_token_to_file()
+{
+  OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
+  rm -f "$OUTPUT_FILE"
+  echo -n $PASSWORD1 | openssl enc -aes-256-cbc -salt -pass stdin -in "$INPUT_FILE" -out "$OUTPUT_FILE"
+  rm -f "$INPUT_FILE"
+  chmod 400 $OUTPUT_FILE
+  echo "Created [$OUTPUT_FILE]"
 }
 
 plaintext_token_from_file()

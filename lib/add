@@ -3,13 +3,6 @@
 TOKEN_NAME=$1
 TOKEN_KEY=$2
 
-create_plain_token()
-{
-  INPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME"
-  echo $TOKEN_KEY > $INPUT_FILE
-  chmod 400 $INPUT_FILE
-}
-
 show_usage()
 {
   [ -n "$1" ] && echo "ERROR: $1"
@@ -43,8 +36,10 @@ echo "An empty password will not lock the file"
 read_hidden_input "Password: "
 echo
 PASSWORD1=$IN
+
+create_plain_token
+
 if [ -z "$PASSWORD1" ]; then
-  create_plain_token
   echo "WARN: Token is not password protected!"
   echo "Created [$INPUT_FILE]"
   exit 0
@@ -59,11 +54,4 @@ if [ "$PASSWORD1" != "$PASSWORD2" ]; then
   exit 1
 fi
 
-create_plain_token
-
-OUTPUT_FILE="$TOKENFILES_DIR/$TOKEN_NAME.enc"
-rm -f "$OUTPUT_FILE"
-echo -n $PASSWORD1 | openssl enc -aes-256-cbc -salt -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
-rm -f "$INPUT_FILE"
-chmod 400 $OUTPUT_FILE
-echo "Created [$OUTPUT_FILE]"
+encrypt_token_to_file

@@ -108,6 +108,9 @@ Example file:
 
 ## Remaining seconds to wait for next OTP
 #WAIT_FOR_NEXT=5
+
+## Fix if the current directory can't be found
+#CURRENT_DIR=$HOME/otp-cli/
 ```
 
 #### Add a token
@@ -173,6 +176,8 @@ OTP Password: <hidden>
 Usage: otp-cli list [-h]
 
 List all added tokens. If token is encoded, it appears as [Encoded] on list.
+If your token is (Deprecated), it is using the old cryptography method.
+Use 'unlock' and 'lock' commands to fix it.
 ```
 
 Ex.:
@@ -193,6 +198,22 @@ Ex.:
 $ ./otp-cli unlock my_token
 Password: <hidden>
 Unlocked file [<$HOME>/otp-cli/tokens/my_token]
+```
+
+#### Lock token file
+
+```
+Usage: otp-cli lock [-h] [Token Name]
+
+If [Token Name] is empty, they will be prompted
+```
+
+Ex.:
+```
+$ ./otp-cli lock my_token
+Password: <hidden>
+Confirm password: <hidden>
+Created [<$HOME>/otp-cli/tokens/my_token]
 ```
 
 #### Remove token

@@ -8,6 +8,8 @@ show_usage()
   echo " -h : This help"
   echo
   echo "List all added tokens. If token is encoded, it appears as [Encoded] on list."
+  echo "If your token is (Deprecated), it is using the old cryptography method."
+  echo "Use 'unlock' and 'lock' commands to fix it."
   exit 1
 }
 

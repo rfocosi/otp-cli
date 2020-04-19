@@ -6,6 +6,11 @@ WAIT_FOR_NEXT=0
 PERMISSION_WARN=1
 ENCRYPTED=0
 
+[ -z $OS ] && OS=$( uname )
+
+[ -z $CURRENT_DIR ] && [ $OS = "Darwin" ] && CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
+[ -z $CURRENT_DIR ] && CURRENT_DIR=$(dirname `readlink -f $0`)
+
 if [ ! -f "$CONFIG_FILE" ]; then
   mkdir -p $APP_HOME
   cat $CURRENT_DIR/config-example > $CONFIG_FILE
@@ -13,11 +18,6 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 . $CONFIG_FILE
-
-[ -z $OS ] && OS=$( uname )
-
-[ -z $CURRENT_DIR ] && [ $OS = "Darwin" ] && CURRENT_DIR=$(dirname `$(command -v realpath || command -v readlink) $0`)
-[ -z $CURRENT_DIR ] && CURRENT_DIR=$(dirname `readlink -f $0`)
 
 . $CURRENT_DIR/lib/common
 CMD=$1

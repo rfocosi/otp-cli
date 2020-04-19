@@ -103,9 +103,6 @@ Example file:
 ## This is an example config file
 ## All configurations done here will be interpreted as a SH script
 
-## If you have issues with the OS auto selection, try this
-#OS=Linux
-
 ## Remaining seconds to wait for next OTP
 #WAIT_FOR_NEXT=5
 

@@ -140,7 +140,7 @@ copy_to_clipboard()
       verify_command "xclip"
       printf "$1" | xclip -sel clip
     else
-      printf "$1"
+      printf "\n\n$1"
       NO_CLIP=1
     fi
     LAST_PASSWORD="$1"

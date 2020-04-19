@@ -155,7 +155,7 @@ read_token_name()
 
 remaining_seconds()
 {
-  REMAINING=$(( 30 - (`date +%S` % 30) ))
+  REMAINING=$(( 30 - (`date +%s` % 30) ))
 }
 
 get_otp()

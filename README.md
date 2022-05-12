@@ -70,7 +70,7 @@ sudo ln -s $( echo "$( pwd )/otp-cli" ) /usr/local/bin/otp-cli
 
 When you run any command for the first time, it will create a new directory on:
 
-`$HOME/otp-cli/tokens/`
+`$HOME/.otp-cli/tokens/`
 
 Where it will store the added tokens and config file.
 
@@ -80,7 +80,7 @@ $ ./otp-cli add my_token <secret_key>
 An empty password will not lock the file
 Password: <hidden>
 Confirm password: <hidden>
-Created [<$HOME>/otp-cli/tokens/my_token.enc]
+Created [<$HOME>/.otp-cli/tokens/my_token.enc]
 
 $ ./otp-cli show my_token
 OTP Password: <hidden>
@@ -94,7 +94,7 @@ Sent to clipboard!
 
 ### Config file
 
-The config file is generated, after first run, on `<$HOME>/otp-cli/config`
+The config file is generated, after first run, on `<$HOME>/.otp-cli/config`
 
 Example file:
 ```
@@ -107,7 +107,7 @@ Example file:
 #WAIT_FOR_NEXT=5
 
 ## Fix if the current directory can't be found
-#CURRENT_DIR=$HOME/otp-cli/
+#CURRENT_DIR=$HOME/.otp-cli/
 
 ## Disables permissions Warning
 #PERMISSION_WARN=0
@@ -132,7 +132,7 @@ Token key: <hidden>
 An empty password will not lock the file
 Password: <hidden>
 Confirm password: <hidden>
-Created [<$HOME>/otp-cli/tokens/my_token.enc]
+Created [<$HOME>/.otp-cli/tokens/my_token.enc]
 ```
 
 #### Show OTP
@@ -213,7 +213,7 @@ Ex.:
 $ ./otp-cli lock my_token
 Password: <hidden>
 Confirm password: <hidden>
-Created [<$HOME>/otp-cli/tokens/my_token]
+Created [<$HOME>/.otp-cli/tokens/my_token]
 ```
 
 #### Remove token
@@ -227,5 +227,5 @@ If [Token Name] is empty, it will be prompted.
 Ex.:
 ```
 $ ./otp-cli remove my_token
-Removed file [<$HOME>/otp-cli/tokens/my_token.enc]
+Removed file [<$HOME>/.otp-cli/tokens/my_token.enc]
 ```

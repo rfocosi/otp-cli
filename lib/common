@@ -46,12 +46,14 @@ create_plain_token()
 check_permissions()
 {
   if [ $PERMISSION_WARN -eq 1 ]; then
-    if [ $( expr $OS : '.*BSD' ) != "0" ]; then
+    if [ $OS = "Darwin" ]; then
+      PERMISSIONS=$( stat -L -f "%A" $1 )
+    elif [ $( expr $OS : '.*BSD' ) != "0" ]; then
       PERMISSIONS=$( stat -f "%OLp" $1 )
     elif [ $( stat --version | head -n 1 | grep -c GNU ) = "1" ]; then
       PERMISSIONS=$( stat -L -c "%a" $1 )
     else
-      PERMISSIONS=$( stat -L -f "%A" $1 )
+      echo "WARNING: Can't check permissions on [$1]"
     fi
 
     if [ $PERMISSIONS != $2 ]; then
@@ -171,6 +173,10 @@ get_otp()
 }
 
 verify_command "openssl"
+verify_command "oathtool"
+verify_command "stat"
+verify_command "basename"
+verify_command "sed"
 
 set_tokenfiles_dir
 check_tokenfiles_dir

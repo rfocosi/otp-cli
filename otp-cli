@@ -1,5 +1,7 @@
 #!/bin/sh
-APP_HOME="$HOME/otp-cli"
+[ -d "$HOME/otp-cli" ] && APP_HOME="$HOME/otp-cli" # Old version compatibility
+[ -z $APP_HOME ] && APP_HOME="$HOME/.otp-cli"
+
 TOKENFILES_DIR="$APP_HOME/tokens"
 CONFIG_FILE="$APP_HOME/config"
 WAIT_FOR_NEXT=0

@@ -142,6 +142,7 @@ Usage: otp-cli show [-h] [-1] [-c] [-s] <Token Name>
 
  -1 : Get one password and exit.
  -c : Copy to clipboard.
+ -z : Only print OTP.
  -s : Silent. Do not output anything to console.
 ```
 

@@ -10,6 +10,7 @@ validate_modifiers()
   do
     [ "$1" = "-c" ] && TO_CLIPBOARD=true
     [ "$1" = "-1" ] && ONE_TIME=true
+    [ "$1" = "-z" ] && ONLY_OTP=true
     [ "$1" = "-s" ] && OUTPUT="/dev/null"
     [ $1 != -* ] && TOKEN_NAME="$1"
     shift
@@ -25,6 +26,7 @@ show_usage()
   echo " -h : This help"
   echo " -1 : Get one password and exit."
   echo " -c : Copy to clipboard."
+  echo " -z : Only print OTP."
   echo " -s : Silent. Do not output anything to console."
   exit 1
 }
@@ -36,7 +38,7 @@ read_token_name
 
 get_token
 
-echo > $( echo "$OUTPUT" )
+[ -z "$ONE_TIME" ] && echo > $( echo "$OUTPUT" )
 
 [ $ONE_TIME ] && [ $WAIT_FOR_NEXT -gt 0 ] && WAIT=true
 
@@ -52,8 +54,10 @@ while true; do
   process_otp
 
   [ $WAIT ] && [ $WAIT_FOR_NEXT -ge $REMAINING ] && OTP="(Waiting for next token ...)"
+  
 
-  display_message=`printf "[%.2d] $OTP" $REMAINING`
+  [ $ONLY_OTP ] && display_message="$OTP" || display_message=`printf "[%.2d] $OTP" $REMAINING`
+
 
   printf "\r" > $( echo "$OUTPUT" )
   [ $display_message_size ] && for i in {1..$display_message_size}; do printf " " > $( echo "$OUTPUT" ); done
